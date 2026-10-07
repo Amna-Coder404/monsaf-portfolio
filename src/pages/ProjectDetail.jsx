@@ -124,8 +124,8 @@ export default function ProjectDetail() {
     }, [id])
 
     useEffect(() => {
-        if (p?.name) document.title = `${p.name} | Amna Ashraf`
-        return () => { document.title = 'Amna Ashraf' }
+        if (p?.name) document.title = `${p.name} | Monsaf Ali`
+        return () => { document.title = 'Monsaf Ali' }
     }, [p])
 
     const back = () => navigate('/', { state: { scrollTo: 'projects' } })

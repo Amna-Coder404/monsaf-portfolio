@@ -4,7 +4,7 @@ import Hero from '../components/Hero'
 import About from '../components/About'
 import Skills from '../components/Skills'
 import Projects from '../components/Projects'
-import Creative from '../components/Creative'
+
 import Contact from '../components/Contact'
 import { go } from '../components/go'
 
@@ -32,7 +32,6 @@ export default function Home() {
             <Divider />
             <Projects />
             <Divider />
-            <Creative />
             <Divider />
             <Contact />
         </>

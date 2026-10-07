@@ -14,13 +14,13 @@ import {
 import { ME } from '../data'
 
 // EmailJS config
-const SERVICE_ID = 'service_o1lvn8l'
-const TEMPLATE_ID = 'template_6txi5km'
+const SERVICE_ID = 'service_93evwe8'
+const TEMPLATE_ID = 'template_u6z21cq'
 const PUBLIC_KEY = 'gf9OfKiAGstx0sCiv'
 
 const isEmail = (v) => /^\S+@\S+\.\S+$/.test(v || '')
 
-
+const mono = { fontFamily: "'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Menlo,monospace" }
 
 const fade = (i = 0) => ({
   initial: { opacity: 0, y: 20 },
@@ -29,77 +29,80 @@ const fade = (i = 0) => ({
   transition: { delay: i * 0.1, duration: 0.5 },
 })
 
-const SOCIALS = [
-  { label: 'GitHub', href: ME.github, icon: FaGithub },
-  { label: 'LinkedIn', href: ME.linkedin, icon: FaLinkedinIn },
-]
+/* rows on the left: every way to reach me, in one list */
+const ROW =
+  'group flex w-full items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-(--fog)'
 
-/* Floating-label field */
+function RowIcon({ children }) {
+  return (
+    <span className="grid size-10 shrink-0 place-items-center rounded-lg border border-(--line) bg-(--fog) text-lg text-(--blue) transition-colors group-hover:border-(--blue) group-hover:bg-(--blue) group-hover:text-white">
+      {children}
+    </span>
+  )
+}
+
+function Arrow() {
+  return (
+    <FiArrowUpRight className="shrink-0 text-(--muted) transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
+  )
+}
+
+/* Field: label on top, icon inside */
 function Field({ id, label, icon: Icon, value, error, textarea = false, counter, ...props }) {
-  const [focused, setFocused] = useState(false)
-  const floated = focused || value.length > 0
   const Tag = textarea ? 'textarea' : 'input'
 
   return (
     <div>
+      <label htmlFor={id} className="mb-2 block text-sm font-medium text-(--muted)">
+        {label}
+      </label>
+
       <div className="relative">
         <Tag
           id={id}
           value={value}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
           aria-invalid={!!error}
-          placeholder=""
-          className={`w-full rounded-2xl border bg-(--fog) pl-12 pr-4 text-base text-white outline-none transition focus:ring-4 disabled:opacity-60 ${textarea ? 'resize-none pb-7 pt-7' : 'pb-2 pt-6'
+          className={`w-full rounded-lg border bg-(--fog) pl-11 pr-4 text-base text-white outline-none transition-colors placeholder:text-(--muted)/50 focus:ring-2 disabled:opacity-60 ${textarea ? 'resize-none py-3' : 'py-3'
             } ${error
               ? 'border-red-400/60 focus:border-red-400 focus:ring-red-400/20'
-              : 'border-(--line) focus:border-(--blue) focus:ring-(--blue)/20'
+              : 'border-(--line) focus:border-(--blue) focus:ring-(--blue)/25'
             }`}
           {...props}
         />
-
-        <Icon
-          className={`pointer-events-none absolute left-4 top-[1.15rem] text-lg transition-colors ${focused ? 'text-(--blue)' : 'text-(--muted)'
-            }`}
-        />
-
-        <label
-          htmlFor={id}
-          className={`pointer-events-none absolute left-12 origin-left transition-all duration-200 ${floated ? 'top-1.5 text-xs' : 'top-[1.05rem] text-base'
-            } ${focused ? 'text-(--blue)' : 'text-(--muted)'}`}
-        >
-          {label}
-        </label>
-
-        {counter && (
-          <span className="pointer-events-none absolute bottom-2 right-4 text-xs text-(--muted)">{counter}</span>
-        )}
+        <Icon className="pointer-events-none absolute left-3.5 top-3.5 text-lg text-(--muted)" />
       </div>
 
-      <AnimatePresence>
-        {error && (
-          <motion.p
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="mt-1.5 flex items-center gap-1.5 text-sm text-red-400"
-          >
-            <FiAlertCircle className="shrink-0" /> {error}
-          </motion.p>
+      <div className="mt-1.5 flex items-start justify-between gap-3">
+        <AnimatePresence>
+          {error && (
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="flex items-center gap-1.5 text-sm text-red-400"
+            >
+              <FiAlertCircle className="shrink-0" /> {error}
+            </motion.p>
+          )}
+        </AnimatePresence>
+        {counter && (
+          <span className="ml-auto text-xs text-(--muted)" style={mono}>
+            {counter}
+          </span>
         )}
-      </AnimatePresence>
+      </div>
     </div>
   )
 }
 
 function SuccessCheck() {
   return (
-    <svg viewBox="0 0 52 52" className="size-20" fill="none">
+    <svg viewBox="0 0 52 52" className="size-16" fill="none">
       <motion.circle
         cx="26"
         cy="26"
         r="24"
-        stroke="#10b981"
+        stroke="#40bed6"
         strokeWidth="2"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
@@ -107,7 +110,7 @@ function SuccessCheck() {
       />
       <motion.path
         d="M15 27l8 8 14-16"
-        stroke="#10b981"
+        stroke="#40bed6"
         strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -130,7 +133,7 @@ function ContactForm() {
   const errors = {
     name: form.name.trim().length < 2 ? 'Please enter your name' : '',
     email: !isEmail(form.email.trim()) ? 'Please enter a valid email' : '',
-    message: form.message.trim(),
+    message: form.message.trim().length < 10 ? 'Please write a few words (at least 10 characters)' : '',
   }
   const hasErrors = Object.values(errors).some(Boolean)
 
@@ -151,7 +154,7 @@ function ContactForm() {
           from_name: form.name.trim(),
           from_email: form.email.trim(),
           reply_to: form.email.trim(),
-          message: `Topic: ${topic}\n\n${form.message.trim()}`,
+          message: form.message.trim(),
         },
         { publicKey: PUBLIC_KEY }
       )
@@ -163,68 +166,61 @@ function ContactForm() {
   }
 
   const reset = () => {
-    setForm({ name: '', email: '', message: '', website: '' });
-
-    setShowErrors(false);
-    setStatus('idle');
+    setForm({ name: '', email: '', message: '', website: '' })
+    setShowErrors(false)
+    setStatus('idle')
   }
 
   const locked = status === 'sending'
 
   return (
-    <div
-      className="relative rounded-[28px] p-px shadow-2xl shadow-black/40"
-      style={{
-        backgroundImage:
-          'linear-gradient(135deg, rgba(122,162,255,0.55), rgba(255,255,255,0.06) 40%, rgba(47,91,255,0.45))',
-      }}
-    >
-      <div className="relative overflow-hidden rounded-[27px] bg-[#0a0d1c] p-5 sm:p-8">
-        {/* glow */}
-        <div className="pointer-events-none absolute -right-20 -top-20 size-56 rounded-full bg-(--blue)/20 blur-3xl" />
+    <div className="relative overflow-hidden rounded-2xl border border-(--line) bg-(--paper) shadow-2xl shadow-black/40">
+      <div className="pointer-events-none absolute -right-20 -top-24 size-60 rounded-full bg-(--blue)/15 blur-3xl" />
 
+      {/* header strip */}
+      <div
+        className="relative flex items-center justify-between border-b border-(--line) px-6 py-3 text-xs text-(--muted)"
+        style={mono}
+      >
+        <span className="flex items-center gap-2">
+          <FiSend aria-hidden="true" /> new message
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="size-1.5 rounded-full bg-(--blue)" /> online
+        </span>
+      </div>
+
+      <div className="relative p-6 sm:p-8">
         <AnimatePresence mode="wait">
           {status === 'sent' ? (
             <motion.div
               key="done"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="relative flex min-h-[26rem] flex-col items-center justify-center gap-4 text-center"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex min-h-[24rem] flex-col items-center justify-center gap-4 text-center"
             >
               <SuccessCheck />
-              <h3 className="text-2xl font-semibold">Message sent!</h3>
+              <h3 className="font-(family-name:--display) text-2xl font-bold text-white">Message sent</h3>
               <p className="max-w-xs text-(--muted)">
-                Thanks for reaching out. I'll reply to <span className="break-all text-white">{form.email}</span>{' '}
-                soon.
+                Thanks for reaching out. I'll reply to{' '}
+                <span className="break-all text-white">{form.email}</span> soon.
               </p>
               <button
                 type="button"
                 onClick={reset}
-                className="mt-2 rounded-full border-2 border-(--blue)/60 px-6 py-2.5 font-semibold transition-colors hover:bg-(--blue)"
+                className="mt-2 rounded-lg border border-(--line) bg-(--fog) px-6 py-2.5 font-semibold text-white transition-colors hover:border-(--blue) hover:bg-(--blue)"
               >
                 Send another
               </button>
             </motion.div>
           ) : (
             <motion.form key="form" onSubmit={submit} noValidate className="relative flex flex-col gap-5">
-              {/* header */}
-              <div className="flex items-center gap-3">
-                <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-(--blue) text-xl text-white shadow-lg shadow-(--blue)/30">
-                  <FiSend />
-                </span>
-                <div>
-                  <h3 className="text-lg font-semibold leading-tight">Send me a message</h3>
-                  <p className="text-sm text-(--muted)">I read every message myself</p>
-                </div>
-              </div>
-
-
-
               <div className="grid gap-5 sm:grid-cols-2">
                 <Field
                   id="c-name"
-                  label="Your name"
+                  label="Name"
                   icon={FiUser}
+                  placeholder="Your name"
                   value={form.name}
                   onChange={set('name')}
                   disabled={locked}
@@ -234,10 +230,11 @@ function ContactForm() {
                 />
                 <Field
                   id="c-email"
-                  label="Your email"
+                  label="Email"
                   icon={FiMail}
                   type="email"
                   inputMode="email"
+                  placeholder="you@example.com"
                   value={form.email}
                   onChange={set('email')}
                   disabled={locked}
@@ -249,10 +246,11 @@ function ContactForm() {
 
               <Field
                 id="c-message"
-                label="Tell me about your idea or project"
+                label="Message"
                 icon={FiEdit3}
                 textarea
-                rows={5}
+                rows={6}
+                placeholder="Tell me about your idea or project"
                 value={form.message}
                 onChange={set('message')}
                 disabled={locked}
@@ -274,7 +272,7 @@ function ContactForm() {
               />
 
               {status === 'error' && (
-                <p className="flex items-start gap-2 rounded-2xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                <p className="flex items-start gap-2 rounded-lg border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
                   <FiAlertCircle className="mt-0.5 shrink-0" />
                   <span>
                     Sending failed. Please try again, or email me at{' '}
@@ -289,8 +287,8 @@ function ContactForm() {
               <motion.button
                 type="submit"
                 disabled={locked}
-                whileTap={{ scale: 0.97 }}
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-(--blue) px-7 py-4 text-base font-semibold text-white shadow-lg shadow-(--blue)/40 transition-[filter] hover:brightness-110 disabled:opacity-60"
+                whileTap={{ scale: 0.98 }}
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-(--blue) px-7 py-3.5 text-base font-semibold text-white transition-[filter] hover:brightness-110 disabled:opacity-60"
               >
                 {locked ? (
                   <>
@@ -318,69 +316,60 @@ export default function Contact() {
       className="wrap relative grid items-start gap-10 overflow-x-clip lg:grid-cols-[1fr_1.1fr] lg:gap-14"
     >
       {/* Left side */}
-      <motion.div {...fade()} className="flex min-w-0 flex-col items-start gap-5 lg:sticky lg:top-28">
-        <span className="rounded-full border border-(--line) bg-(--fog) px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-(--muted)">
-          Contact
-        </span>
-
+      <motion.div {...fade()} className="flex min-w-0 flex-col items-start gap-6 lg:sticky lg:top-28">
         <h2 className="h2 text-balance" style={{ fontSize: 'clamp(2rem, 7vw, 3.5rem)', lineHeight: 1.1 }}>
-          Let's build something{' '}
-          <span
-            className="bg-clip-text text-transparent"
-            style={{ backgroundImage: 'linear-gradient(90deg, #7aa2ff, #2f5bff)' }}
-          >
-            together
-          </span>
+          Let's build something together
         </h2>
 
         <p className="max-w-md text-base text-(--muted) sm:text-lg">
           Have a question or an idea? Message me and let's collaborate. I'll reply soon!
         </p>
 
-        <div className="flex w-full max-w-md flex-col gap-3">
-          <a
-            href={`mailto:${ME.email}`}
-            className="group flex min-w-0 items-center gap-4 rounded-2xl border border-(--line) bg-(--fog) p-4 transition-colors hover:border-(--blue)"
-          >
-            <span className="grid size-11 shrink-0 place-items-center rounded-full bg-(--blue) text-lg text-white">
+        {/* every way to reach me, one list */}
+        <div className="w-full max-w-md divide-y divide-(--line) overflow-hidden rounded-2xl border border-(--line) bg-(--paper)">
+          <a href={`mailto:${ME.email}`} className={ROW}>
+            <RowIcon>
               <FiMail />
-            </span>
+            </RowIcon>
             <span className="min-w-0 flex-1">
               <span className="block text-sm text-(--muted)">Email</span>
-              <span className="block truncate font-medium">{ME.email}</span>
+              <span className="block truncate font-medium text-white">{ME.email}</span>
             </span>
-            <FiArrowUpRight className="shrink-0 text-(--muted) transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
+            <Arrow />
           </a>
 
-          <button
-            type="button"
-            onClick={() => window.dispatchEvent(new Event('open-chat'))}
-            className="group flex items-center gap-4 rounded-2xl border border-(--line) bg-(--fog) p-4 text-left transition-colors hover:border-(--blue)"
-          >
-            <span className="grid size-11 shrink-0 place-items-center rounded-full bg-(--blue) text-lg text-white">
+          <button type="button" onClick={() => window.dispatchEvent(new Event('open-chat'))} className={ROW}>
+            <RowIcon>
               <FiMessageCircle />
-            </span>
+            </RowIcon>
             <span className="min-w-0 flex-1">
               <span className="block text-sm text-(--muted)">Have a question?</span>
-              <span className="block font-medium">Ask my AI assistant</span>
+              <span className="block font-medium text-white">Ask my AI assistant</span>
             </span>
-            <FiArrowUpRight className="shrink-0 text-(--muted) transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
+            <Arrow />
           </button>
-        </div>
 
-        <div className="flex flex-wrap gap-3">
-          {SOCIALS.map((s) => (
-            <motion.a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noreferrer"
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-2.5 rounded-full border border-(--line) bg-(--fog) py-2.5 pl-4 pr-5 text-sm font-medium transition-colors hover:border-(--blue) hover:bg-(--blue) hover:text-white"
-            >
-              <s.icon className="text-lg" /> {s.label}
-            </motion.a>
-          ))}
+          <a href={ME.github} target="_blank" rel="noreferrer" className={ROW}>
+            <RowIcon>
+              <FaGithub />
+            </RowIcon>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm text-(--muted)">Code</span>
+              <span className="block font-medium text-white">GitHub</span>
+            </span>
+            <Arrow />
+          </a>
+
+          <a href={ME.linkedin} target="_blank" rel="noreferrer" className={ROW}>
+            <RowIcon>
+              <FaLinkedinIn />
+            </RowIcon>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm text-(--muted)">Network</span>
+              <span className="block font-medium text-white">LinkedIn</span>
+            </span>
+            <Arrow />
+          </a>
         </div>
       </motion.div>
 
@@ -390,7 +379,7 @@ export default function Contact() {
       </motion.div>
 
       <footer className="col-span-full border-t border-(--line) pt-8 text-center text-sm text-(--muted)">
-        © {new Date().getFullYear()} Amna Ashraf
+        © {new Date().getFullYear()} Monsaf Ali
       </footer>
     </section>
   )

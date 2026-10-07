@@ -180,8 +180,8 @@ export default function Projects() {
                   whileTap={{ scale: 0.94 }}
                   onClick={() => setTag(tag === t ? null : t)}
                   className={`rounded-full border px-3.5 py-1 text-sm font-medium transition-colors ${tag === t
-                      ? 'border-(--blue) bg-(--blue) text-white'
-                      : 'border-(--line) bg-(--paper)/80 text-(--muted) hover:border-(--blue) hover:text-white'
+                    ? 'border-(--blue) bg-(--blue) text-white'
+                    : 'border-(--line) bg-(--paper)/80 text-(--muted) hover:border-(--blue) hover:text-white'
                     }`}
                 >
                   {t} <span className="opacity-60">{count}</span>

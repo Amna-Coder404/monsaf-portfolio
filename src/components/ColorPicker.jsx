@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { FiDroplet } from 'react-icons/fi'
+import { FiCheck, FiDroplet } from 'react-icons/fi'
 
 const SWATCHES = [
-    { name: 'Blue', color: '#2f5bff' },
-    { name: 'Violet', color: '#7c3aed' },
     { name: 'Cyan', color: '#06b6d4' },
+    { name: 'Violet', color: '#8b5cf6' },
+    { name: 'Pink', color: '#778500' },
     { name: 'Emerald', color: '#10b981' },
-    { name: 'Rose', color: '#f43f5e' },
     { name: 'Amber', color: '#f59e0b' },
+    { name: 'Orange', color: '#f97316' },
 ]
 
 export default function ColorPicker({ onOpen }) {
@@ -47,8 +47,6 @@ export default function ColorPicker({ onOpen }) {
         document.addEventListener('keydown', onKey)
         window.addEventListener('resize', close)
         return () => {
-            // Cleanup: remove the listeners when the picker closes or the component unmounts.
-            // React doesn't remove document/window listeners, so without this they pile up (memory leak)
             document.removeEventListener('pointerdown', onDown)
             document.removeEventListener('keydown', onKey)
             window.removeEventListener('resize', close)
@@ -78,23 +76,37 @@ export default function ColorPicker({ onOpen }) {
                             exit={{ opacity: 0, y: -12, scale: 0.97 }}
                             transition={{ duration: 0.25 }}
                             style={{ top: pos.top, right: pos.right }}
-                            className="fixed z-[60] max-w-[calc(100vw-1.5rem)] rounded-3xl border border-white/10 bg-[#05060f]/95 p-4 shadow-2xl shadow-black/60 backdrop-blur-xl"
+                            className="fixed z-[60] w-64 max-w-[calc(100vw-1.5rem)] rounded-3xl border border-white/10 bg-[#04080c]/95 p-4 shadow-2xl shadow-black/60 backdrop-blur-xl"
                         >
                             <p className="mb-3 text-xs font-semibold text-(--muted)">Pick a vibe</p>
-                            <div className="flex flex-wrap gap-2.5">
-                                {SWATCHES.map((s) => (
-                                    <motion.button
-                                        key={s.color}
-                                        type="button"
-                                        aria-label={s.name}
-                                        title={s.name}
-                                        onClick={() => pick(s.color)}
-                                        whileTap={{ scale: 0.85 }}
-                                        style={{ background: s.color }}
-                                        className={`size-9 touch-manipulation rounded-full ring-offset-2 ring-offset-[#05060f] transition-shadow ${color === s.color ? 'ring-2 ring-white' : 'ring-0'
-                                            }`}
-                                    />
-                                ))}
+                            <div className="grid grid-cols-3 gap-2">
+                                {SWATCHES.map((s) => {
+                                    const active = color === s.color
+                                    return (
+                                        <motion.button
+                                            key={s.color}
+                                            type="button"
+                                            aria-label={s.name}
+                                            onClick={() => pick(s.color)}
+                                            whileTap={{ scale: 0.92 }}
+                                            className={`flex touch-manipulation flex-col items-center gap-1.5 rounded-2xl border p-2 transition-colors ${active
+                                                ? 'border-white/40 bg-white/10'
+                                                : 'border-white/5 bg-white/5 hover:bg-white/10'
+                                                }`}
+                                        >
+                                            <span
+                                                style={{
+                                                    background: s.color,
+                                                    boxShadow: `0 0 18px ${s.color}99`,
+                                                }}
+                                                className="grid size-9 place-items-center rounded-full text-white"
+                                            >
+                                                {active && <FiCheck />}
+                                            </span>
+                                            {/* <span className="text-[11px] text-white/70">{s.name}</span> */}
+                                        </motion.button>
+                                    )
+                                })}
                             </div>
                         </motion.div>
                     )}

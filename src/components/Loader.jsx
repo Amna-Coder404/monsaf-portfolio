@@ -1,31 +1,25 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { FaHandPointer } from 'react-icons/fa'
 
-const MIN_MS = 2300 // kam az kam itni der dikhega (hand ko pohanchne ka time)
+const MIN_MS = 2600 // kam az kam itni der dikhega
 const MAX_MS = 6000 // is se zyada kabhi nahi rukega
 
-// Want a real hand photo/illustration? Put a transparent PNG in /public (fingertip at top-center)
-// and set HAND_IMG = '/hand.png'. Leave it null to use the icon hand.
 const SPLASH_BG = '#050b2e' // dark blue splash color (keep the same in index.html)
-const OPEN_COLOR = SPLASH_BG // icon khulte waqt poori screen isi colour ki hogi
-const ICON_IMG = '/icon.png' // public/icon.png
-const HAND_IMG = null
-const HAND_SIZE = 76
-const TIP_X = HAND_IMG ? HAND_SIZE / 2 : HAND_SIZE * 0.38 // x position of the fingertip
+const MONO = "'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Menlo,monospace"
+const NAME = 'Monsaf Ali'
 
-function Hand() {
-    const shadow = 'drop-shadow-[0_14px_16px_rgba(0,0,0,0.6)]'
-    return HAND_IMG ? (
-        <img src={HAND_IMG} alt="" width={HAND_SIZE} draggable="false" className={shadow} />
-    ) : (
-        <FaHandPointer size={HAND_SIZE} className={`text-[#f6c8a4] ${shadow}`} aria-hidden="true" />
-    )
-}
+// boot log: each line appears when progress reaches `at`
+const STEPS = [
+    { at: 0, text: 'starting workspace' },
+    { at: 22, text: 'loading components' },
+    { at: 46, text: 'optimizing assets' },
+    { at: 72, text: 'connecting interface' },
+    { at: 100, text: 'ready' },
+]
 
 export default function Loader({ onDone }) {
     const [p, setP] = useState(0)
-    const [phase, setPhase] = useState('wait') // wait -> tap -> open
+    const [phase, setPhase] = useState('wait') // wait -> ready -> open
 
     // loading ke dauran scroll band
     useEffect(() => {
@@ -49,14 +43,14 @@ export default function Loader({ onDone }) {
         }
         window.addEventListener('load', onLoad)
 
-        // page ready: finger tap karta hai, icon khulta hai, phir portfolio
+        // page ready: "ready" line shows, curtain opens, then portfolio
         const finish = () => {
             if (finished) return
             finished = true
             setP(100)
-            setPhase('tap')
-            timers.push(setTimeout(() => setPhase('open'), 450))
-            timers.push(setTimeout(onDone, 1250))
+            setPhase('ready')
+            timers.push(setTimeout(() => setPhase('open'), 550))
+            timers.push(setTimeout(onDone, 1450))
         }
 
         const tick = (now) => {
@@ -79,113 +73,141 @@ export default function Loader({ onDone }) {
         }
     }, [onDone])
 
-    const tapped = phase !== 'wait'
     const open = phase === 'open'
+    const visible = STEPS.filter((s) => p >= s.at)
+    const curtain = { duration: 0.85, ease: [0.76, 0, 0.24, 1] }
 
     return (
         <motion.div
             role="status"
             aria-label="Loading"
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-            style={{ background: SPLASH_BG }}
-            className="fixed inset-0 z-[100] grid place-items-center overflow-hidden"
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+            className="fixed inset-0 z-[100] overflow-hidden"
         >
-            {/* soft glow behind the icon */}
-            <div className="pointer-events-none absolute size-72 rounded-full bg-(--blue)/25 blur-3xl sm:size-96" />
+            {/* two curtain halves: they slide apart when loading is done */}
+            <motion.div
+                className="absolute inset-x-0 top-0 h-1/2"
+                style={{ background: SPLASH_BG }}
+                animate={{ y: open ? '-100%' : '0%' }}
+                transition={curtain}
+            />
+            <motion.div
+                className="absolute inset-x-0 bottom-0 h-1/2"
+                style={{ background: SPLASH_BG }}
+                animate={{ y: open ? '100%' : '0%' }}
+                transition={curtain}
+            />
 
-            <div className="relative flex flex-col items-center">
-                {/* app icon */}
-                <div className="relative">
-                    {/* ripple where the finger lands */}
-                    {tapped && (
-                        <motion.span
-                            initial={{ scale: 1, opacity: 0.7 }}
-                            animate={{ scale: 2.2, opacity: 0 }}
-                            transition={{ duration: 0.7, ease: 'easeOut' }}
-                            className="pointer-events-none absolute inset-0 rounded-[28px] border-2 border-(--blue) sm:rounded-[34px]"
+            {/* everything on top of the curtain fades out as it opens */}
+            <motion.div
+                className="absolute inset-0"
+                animate={{ opacity: open ? 0 : 1, scale: open ? 1.03 : 1 }}
+                transition={{ duration: 0.4, ease: 'easeIn' }}
+            >
+                {/* faint grid + glow, same language as the site background */}
+                <div
+                    className="pointer-events-none absolute inset-0"
+                    style={{
+                        backgroundImage:
+                            'linear-gradient(rgba(140,150,196,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(140,150,196,0.06) 1px, transparent 1px)',
+                        backgroundSize: '56px 56px',
+                        WebkitMaskImage: 'radial-gradient(ellipse at 50% 45%, #000 0%, transparent 70%)',
+                        maskImage: 'radial-gradient(ellipse at 50% 45%, #000 0%, transparent 70%)',
+                    }}
+                />
+                <div className="pointer-events-none absolute left-1/2 top-[42%] size-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--blue)/25 blur-3xl sm:size-[28rem]" />
+
+                {/* top bar */}
+                <div
+                    className="absolute inset-x-0 top-0 flex items-center justify-between px-6 py-5 text-xs text-(--muted) sm:px-10"
+                    style={{ fontFamily: MONO }}
+                >
+                    <span>monsaf.dev</span>
+                    <span className="flex items-center gap-2">
+                        <span
+                            className="size-1.5 rounded-full"
+                            style={{ background: p >= 100 ? '#40bed6' : 'var(--blue)', boxShadow: '0 0 10px var(--blue)' }}
                         />
-                    )}
-
-                    <motion.div
-                        initial={{ scale: 0, rotate: -12 }}
-                        animate={
-                            open
-                                ? { scale: 40, rotate: 0, backgroundColor: OPEN_COLOR }
-                                : tapped
-                                    ? { scale: 0.9, rotate: 0 }
-                                    : { scale: 1, rotate: 0 }
-                        }
-                        transition={
-                            open
-                                ? { duration: 0.8, ease: [0.76, 0, 0.24, 1] }
-                                : tapped
-                                    ? { duration: 0.15 }
-                                    : { type: 'spring', stiffness: 200, damping: 14, delay: 0.1 }
-                        }
-                        className="relative grid size-28 place-items-center overflow-hidden rounded-[28px] bg-(--blue) shadow-[0_20px_60px] shadow-(--blue)/50 sm:size-32 sm:rounded-[34px]"
-                    >
-                        {/* icon.png */}
-                        <motion.img
-                            src={ICON_IMG}
-                            alt=""
-                            draggable="false"
-                            animate={{ opacity: open ? 0 : 1 }}
-                            transition={{ duration: 0.2 }}
-                            className="relative size-full object-cover"
-                        />
-                        {/* glossy highlight */}
-                        <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-b from-white/30 to-transparent" />
-                    </motion.div>
-
-                    {/* the hand: travels in from the corner, hovers, then taps */}
-                    <motion.div
-                        initial={{ x: 140, y: 240, opacity: 0, rotate: 18 }}
-                        animate={{ x: 0, y: 0, opacity: open ? 0 : 1, rotate: 0 }}
-                        transition={{
-                            x: { delay: 0.8, duration: 0.9, ease: [0.22, 1, 0.36, 1] },
-                            y: { delay: 0.8, duration: 0.9, ease: [0.22, 1, 0.36, 1] },
-                            rotate: { delay: 0.8, duration: 0.9, ease: [0.22, 1, 0.36, 1] },
-                            opacity: open ? { duration: 0.2 } : { delay: 0.8, duration: 0.3 },
-                        }}
-                        style={{ marginLeft: -TIP_X }}
-                        className="pointer-events-none absolute left-1/2 top-1/2 z-10 mt-2"
-                    >
-                        <motion.div
-                            animate={
-                                tapped
-                                    ? { y: 10, scale: 0.92 }
-                                    : { y: [0, -6, 0] }
-                            }
-                            transition={
-                                tapped
-                                    ? { duration: 0.15 }
-                                    : { delay: 1.8, duration: 1.4, repeat: Infinity, ease: 'easeInOut' }
-                            }
-                            style={{ transformOrigin: `${TIP_X}px 0px` }}
-                        >
-                            <Hand />
-                        </motion.div>
-                    </motion.div>
+                        {p >= 100 ? 'ready' : 'loading'}
+                    </span>
                 </div>
 
-                {/* app label + progress, like a phone home screen */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: tapped ? 0 : 1 }}
-                    transition={{ delay: tapped ? 0 : 0.4, duration: 0.25 }}
-                    className="mt-5 flex flex-col items-center"
-                >
-                    <p className="font-(family-name:--display) text-lg font-bold text-white">Amna</p>
-                    <div className="mt-3 h-1 w-24 overflow-hidden rounded-full bg-white/10">
+                {/* centre: name + boot log */}
+                <div className="absolute inset-0 grid place-items-center px-6">
+                    <div className="w-full max-w-md">
+                        <h1 className="flex overflow-hidden pb-1 font-(family-name:--display) text-5xl font-bold tracking-tight text-white sm:text-7xl">
+                            {NAME.split('').map((ch, i) => (
+                                <motion.span
+                                    key={i}
+                                    initial={{ y: '110%' }}
+                                    animate={{ y: 0 }}
+                                    transition={{ delay: 0.15 + i * 0.045, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                                    className="inline-block whitespace-pre"
+                                >
+                                    {ch}
+                                </motion.span>
+                            ))}
+                        </h1>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.9, duration: 0.5 }}
+                            className="mt-2 text-sm text-(--muted) sm:text-base"
+                        >
+                            Web &amp; Mobile Developer
+                        </motion.p>
+
+                        <div
+                            className="mt-8 flex min-h-[7.5rem] flex-col gap-1.5 text-xs sm:text-sm"
+                            style={{ fontFamily: MONO }}
+                        >
+                            {visible.map((s, i) => {
+                                const done = i < visible.length - 1 || p >= 100
+                                return (
+                                    <motion.div
+                                        key={s.text}
+                                        initial={{ opacity: 0, x: -8 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ duration: 0.25 }}
+                                        className="flex items-center gap-3"
+                                        style={{ color: done ? '#c9d2f5' : '#8c96c4' }}
+                                    >
+                                        <span className="grid w-3 place-items-center">
+                                            {done ? (
+                                                <span style={{ color: '#40bed6' }}>✓</span>
+                                            ) : (
+                                                <motion.span
+                                                    animate={{ opacity: [1, 0.25, 1] }}
+                                                    transition={{ duration: 0.9, repeat: Infinity }}
+                                                    className="size-1.5 rounded-full bg-(--blue)"
+                                                />
+                                            )}
+                                        </span>
+                                        {s.text}
+                                    </motion.div>
+                                )
+                            })}
+                        </div>
+                    </div>
+                </div>
+
+                {/* big counter + progress line */}
+                <div className="absolute inset-x-0 bottom-0 px-6 pb-6 sm:px-10 sm:pb-8">
+                    <div className="mb-4 flex items-end justify-between">
+                        <p className="font-(family-name:--display) text-7xl font-bold leading-none tabular-nums text-white sm:text-9xl">
+                            {p}
+                            <span className="ml-1 text-3xl text-(--muted) sm:text-5xl">%</span>
+                        </p>
+                    </div>
+                    <div className="h-[2px] w-full overflow-hidden rounded-full bg-white/10">
                         <div
                             className="h-full rounded-full bg-(--blue) transition-[width] duration-100 ease-linear"
-                            style={{ width: `${p}%` }}
+                            style={{ width: `${p}%`, boxShadow: '0 0 12px var(--blue)' }}
                         />
                     </div>
-                    <p className="mt-2 text-xs font-semibold tabular-nums text-(--muted)">{p}%</p>
-                </motion.div>
-            </div>
+                </div>
+            </motion.div>
         </motion.div>
     )
 }

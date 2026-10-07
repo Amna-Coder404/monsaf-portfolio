@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { FiArrowDown, FiMessageCircle, FiSend, FiX } from 'react-icons/fi'
 
-const GREETING = "Hi! I'm Amna's assistant. Ask me anything about Amna, her skills or her projects."
-const SUGGESTIONS = ['Show me her projects', 'What are her skills?', 'How can I contact her?']
+const GREETING = "Hi! I'm Monsaf's assistant. Ask me anything about Monsaf, his skills, services or projects."
+const SUGGESTIONS = ['Show me his projects', 'What are his skills?', 'What services does he offer?', 'How can I contact him?']
 
 function TypingDots() {
     return (
@@ -125,7 +125,7 @@ export default function ChatWidget() {
                     <motion.div
                         key="panel"
                         role="dialog"
-                        aria-label="Chat with Amna's assistant"
+                        aria-label="Chat with Monsaf's assistant"
                         initial={{ opacity: 0, y: 24, scale: 0.94 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 24, scale: 0.94 }}
@@ -143,7 +143,7 @@ export default function ChatWidget() {
                                 <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full border-2 border-[#0a0d1c] bg-emerald-400" />
                             </div>
                             <div className="min-w-0 flex-1">
-                                <p className="truncate font-semibold leading-tight">Amna's assistant</p>
+                                <p className="truncate font-semibold leading-tight">Monsaf's assistant</p>
                                 <p className="text-xs text-(--muted)">{thinking ? 'typing...' : 'online'}</p>
                             </div>
                             <button
@@ -225,7 +225,7 @@ export default function ChatWidget() {
                                     maxLength={400}
                                     enterKeyHint="send"
                                     autoComplete="off"
-                                    placeholder={thinking ? 'Thinking...' : 'Ask about Amna or her projects'}
+                                    placeholder={thinking ? 'Thinking...' : 'Ask about Monsaf or her projects'}
                                     className="min-w-0 flex-1 rounded-full border border-(--line) bg-(--fog) px-4 py-3 text-base text-white outline-none transition placeholder:text-(--muted) focus:border-(--blue) focus:ring-4 focus:ring-(--blue)/20 read-only:opacity-60"
                                 />
                                 <motion.button
@@ -256,7 +256,7 @@ export default function ChatWidget() {
                         style={{ bottom: `calc(${safeBottom} + 5.25rem)` }}
                         className="fixed right-4 z-50 rounded-2xl rounded-br-sm border border-(--line) bg-[#0a0d1c] px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-black/40 sm:right-6"
                     >
-                        Ask me about Amna
+                        Ask me about Monsaf
                     </motion.button>
                 )}
             </AnimatePresence>
