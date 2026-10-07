@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+:root {
+    color-scheme: dark;
+    --ink: #eef2ff;
+    /* text ka rang (ab halka) */
+    --blue: #06b6d4;
+    /* premium blue */
+    --paper: #0a0d1c;
+    /* cards */
+    --fog: #10142b;
+    /* halke fills */
+    --line: #1b2246;
+    /* borders */
+    --muted: #8c96c4;
+    /* secondary text */
+    --display: 'Space Grotesk', system-ui, sans-serif;
+}
+
+html,
+body {
+    position: relative;
+    background: #03040a;
+    color: var(--ink);
+}
+
+@keyframes marquee {
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+.marquee-track {
+    animation: marquee 35s linear infinite;
+}
+
+.marquee-track.reverse {
+    animation-direction: reverse;
+}
+
+.marquee-wrap:hover .marquee-track {
+    animation-play-state: paused;
+}
+
+@layer components {
+
+    /* Har section: ek jaisi width aur upar/neeche barabar jagah */
+    .wrap {
+        width: min(1200px, 100% - 2.5rem);
+        margin-inline: auto;
+        padding-block: clamp(4.5rem, 10vw, 8rem);
+    }
+
+    /* Section headings */
+    .h2 {
+        font-family: var(--display);
+        font-size: clamp(2rem, 4.5vw, 3.25rem);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        margin: 0;
+    }
+}
+
+/* Fixed navbar ke neeche heading na chhupe jab menu se jump karo */
+section[id] {
+    scroll-margin-top: 4.5rem;
+}
