@@ -139,7 +139,7 @@ export default function ChatWidget() {
                         {/* Header */}
                         <div className="flex shrink-0 items-center gap-3 border-b border-(--line) px-4 py-3">
                             <div className="relative grid size-9 shrink-0 place-items-center rounded-full bg-(--blue) font-bold text-white">
-                                A
+                                M
                                 <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full border-2 border-[#0a0d1c] bg-emerald-400" />
                             </div>
                             <div className="min-w-0 flex-1">

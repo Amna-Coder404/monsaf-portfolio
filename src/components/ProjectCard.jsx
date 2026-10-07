@@ -16,6 +16,11 @@ const mono = { fontFamily: "'JetBrains Mono','Fira Code',ui-monospace,SFMono-Reg
 /* the picture: a web screenshot slides up from the bottom edge,
    a phone peeks up from the bottom edge. no floating, no blobs. */
 function Media({ project: p, isWeb }) {
+    const sources = imageSources(p)
+
+    // DEBUG: remove this line once images show up
+    console.log(p.name, p.type, sources)
+
     return (
         <div
             className="relative h-64 overflow-hidden border-b border-(--line) bg-(--fog)"
@@ -29,11 +34,11 @@ function Media({ project: p, isWeb }) {
 
             {isWeb ? (
                 <div className="absolute inset-x-6 top-8 bottom-0 overflow-hidden rounded-t-xl border border-b-0 border-(--line) bg-(--paper) shadow-2xl shadow-black/60 transition-transform duration-500 ease-out group-hover:-translate-y-2">
-                    <ProjectImage sources={imageSources(p)} name={p.name} />
+                    <ProjectImage sources={sources} name={p.name} />
                 </div>
             ) : (
-                <div className="absolute left-1/2 top-8 h-72 -translate-x-1/2 overflow-hidden rounded-t-[1.7rem] border-[5px] border-b-0 border-slate-800 bg-slate-900 shadow-2xl shadow-black/60 transition-transform duration-500 ease-out group-hover:-translate-y-2" style={{ aspectRatio: '9 / 19' }}>
-                    <ProjectImage sources={imageSources(p)} name={p.name} />
+                <div className="absolute left-1/2 top-8 h-72 w-[8.5rem] -translate-x-1/2 overflow-hidden rounded-t-[1.7rem] border-[5px] border-b-0 border-slate-800 bg-slate-900 shadow-2xl shadow-black/60 transition-transform duration-500 ease-out group-hover:-translate-y-2">
+                    <ProjectImage sources={sources} name={p.name} />
                 </div>
             )}
         </div>
@@ -57,7 +62,7 @@ const ProjectCard = forwardRef(function ProjectCard({ project: p, index = 0, onT
             viewport={{ once: true, amount: 0.15 }}
             exit={{ opacity: 0, scale: 0.96 }}
             transition={{ type: 'spring', stiffness: 220, damping: 26, delay: (index % 3) * 0.06 }}
-            className="group relative flex w-[300px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-(--line) bg-(--paper) transition-[border-color,box-shadow]  "
+            className="group relative flex w-[300px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-(--line) bg-(--paper) transition-[border-color,box-shadow]"
         >
             {/* line that draws across the top on hover */}
             <span className="absolute inset-x-0 top-0 z-20 h-0.5 origin-left scale-x-0 bg-(--blue) transition-transform duration-500 group-hover:scale-x-100" />

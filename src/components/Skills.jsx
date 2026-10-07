@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { forwardRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SKILLS, LEVELS } from '../data'
 
-function SkillCard({ s, i }) {
+const SkillCard = forwardRef(function SkillCard({ s, i }, ref) {
   const onMove = (e) => {
     const r = e.currentTarget.getBoundingClientRect()
     e.currentTarget.style.setProperty('--x', `${e.clientX - r.left}px`)
@@ -11,6 +11,7 @@ function SkillCard({ s, i }) {
 
   return (
     <motion.div
+      ref={ref}
       layout
       initial={{ opacity: 0, y: 30, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -59,7 +60,7 @@ function SkillCard({ s, i }) {
       </div>
     </motion.div>
   )
-}
+})
 
 export default function Skills() {
   const [tab, setTab] = useState(0)
