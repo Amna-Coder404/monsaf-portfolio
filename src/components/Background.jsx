@@ -43,7 +43,7 @@ export default function Background() {
 
         // ---------- BUBBLES ----------
         const makeBubble = (fromBottom = false) => {
-            const r = Math.random() * 28 + 8; // 8 - 36px
+            const r = Math.random() * 30 + 18; // 18 - 48px
             return {
                 x: Math.random() * w,
                 y: fromBottom ? h + r + Math.random() * 80 : Math.random() * h,
