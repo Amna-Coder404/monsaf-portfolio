@@ -20,11 +20,7 @@ const MODE = 'frame'
 const ROLES = ['MERN Stack Developer', 'React.js Developer', 'Full-Stack Developer']
 const STACK = ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'REST APIs', 'Tailwind CSS']
 
-const SOCIALS = [
-  { label: 'GitHub', icon: FiGithub, href: 'https://github.com/monsafali' },
-  { label: 'LinkedIn', icon: FiLinkedin, href: 'https://linkedin.com/in/monsaf-ali-' },
-  { label: 'Email', icon: FiMail, href: 'mailto:monsafali272@gmail.com' },
-]
+
 
 export default function Hero() {
   const reduce = useReducedMotion()
@@ -173,7 +169,7 @@ export default function Hero() {
         <motion.div {...rise(0.5)} className="mt-9 flex flex-wrap items-center gap-4">
           <button
             onClick={() => go('projects')}
-            className="group relative flex items-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-(--blue) to-indigo-500 px-7 py-4 font-semibold text-white shadow-xl shadow-(--blue)/40 transition-transform hover:-translate-y-0.5"
+            className="group relative flex items-center gap-2 overflow-hidden rounded-full p-[1.5px] bg-gradient-to-r from-(--blue) to-indigo-500 px-7 py-4 font-semibold text-white shadow-xl shadow-(--blue)/40 transition-transform hover:-translate-y-0.5"
           >
             <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             <span className="relative">See my work</span>
@@ -181,53 +177,13 @@ export default function Hero() {
           </button>
           <button
             onClick={() => go('contact')}
-            className="rounded-2xl border border-white/15 bg-white/5 px-7 py-4 font-semibold text-white backdrop-blur transition-all hover:-translate-y-0.5 hover:border-cyan-300 hover:text-cyan-300"
+            className="rounded-full p-[1.5px] border border-white/15 bg-white/5 px-7 py-4 font-semibold text-white backdrop-blur transition-all hover:-translate-y-0.5 hover:border-cyan-300 hover:text-cyan-300"
           >
             Let's talk
           </button>
 
-          <div className="ml-1 flex items-center gap-2.5">
-            {SOCIALS.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={s.label}
-                className="grid size-12 place-items-center rounded-2xl border border-white/10 bg-white/5 text-xl text-white/80 backdrop-blur transition-all hover:-translate-y-0.5 hover:border-cyan-300 hover:bg-cyan-300/90 hover:text-[#04080c]"
-              >
-                <s.icon />
-              </a>
-            ))}
-          </div>
         </motion.div>
 
-        {/* Stack marquee */}
-        <motion.div
-          {...rise(0.62)}
-          className="relative mt-14 max-w-xl overflow-hidden"
-          style={{
-            WebkitMaskImage:
-              'linear-gradient(to right, transparent, #000 15%, #000 85%, transparent)',
-            maskImage:
-              'linear-gradient(to right, transparent, #000 15%, #000 85%, transparent)',
-          }}
-        >
-          <motion.div
-            className="flex w-max gap-3"
-            animate={reduce ? undefined : { x: ['0%', '-50%'] }}
-            transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
-          >
-            {[...STACK, ...STACK].map((t, i) => (
-              <span
-                key={i}
-                className="whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-4 py-1.5 font-mono text-xs text-white/70 backdrop-blur"
-              >
-                {t}
-              </span>
-            ))}
-          </motion.div>
-        </motion.div>
       </div>
 
       {/* ───────── Photo ───────── */}

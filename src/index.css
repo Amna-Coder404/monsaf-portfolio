@@ -15,6 +15,19 @@
     --muted: #8c96c4;
     /* secondary text */
     --display: 'Space Grotesk', system-ui, sans-serif;
+
+    /* Fixed navbar ki height (mobile par thodi chhoti) */
+    --nav-h: 4.5rem;
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
 }
 
 html,
@@ -22,6 +35,18 @@ body {
     position: relative;
     background: #03040a;
     color: var(--ink);
+    min-height: 100vh;
+    min-height: 100dvh;
+    /* mobile address bar ke saath sahi height */
+    overflow-x: clip;
+    /* side scroll band */
+}
+
+img,
+video,
+svg,
+canvas {
+    max-width: 100%;
 }
 
 @keyframes marquee {
@@ -32,14 +57,25 @@ body {
 
 .marquee-track {
     animation: marquee 35s linear infinite;
+    will-change: transform;
 }
 
 .marquee-track.reverse {
     animation-direction: reverse;
 }
 
-.marquee-wrap:hover .marquee-track {
-    animation-play-state: paused;
+/* Hover sirf mouse wale devices par (touch par atak jata hai) */
+@media (hover: hover) {
+    .marquee-wrap:hover .marquee-track {
+        animation-play-state: paused;
+    }
+}
+
+/* Phone par marquee thodi tez */
+@media (max-width: 640px) {
+    .marquee-track {
+        animation-duration: 22s;
+    }
 }
 
 @layer components {
@@ -48,21 +84,54 @@ body {
     .wrap {
         width: min(1200px, 100% - 2.5rem);
         margin-inline: auto;
-        padding-block: clamp(4.5rem, 10vw, 8rem);
+        padding-block: clamp(3.5rem, 10vw, 8rem);
     }
 
     /* Section headings */
     .h2 {
         font-family: var(--display);
-        font-size: clamp(2rem, 4.5vw, 3.25rem);
+        font-size: clamp(1.75rem, 5.5vw + 0.5rem, 3.25rem);
         font-weight: 800;
         line-height: 1.1;
         letter-spacing: -0.02em;
         margin: 0;
+        overflow-wrap: anywhere;
+        /* lambay words screen se bahar na jayen */
     }
 }
 
 /* Fixed navbar ke neeche heading na chhupe jab menu se jump karo */
 section[id] {
-    scroll-margin-top: 4.5rem;
+    scroll-margin-top: calc(var(--nav-h) + 0.5rem);
+}
+
+/* Chhoti screens */
+@media (max-width: 640px) {
+    :root {
+        --nav-h: 3.75rem;
+    }
+
+    .wrap {
+        width: calc(100% - 2rem);
+        /* phone par side margin thora kam */
+    }
+}
+
+/* Notch wale phones (iPhone etc.) */
+@supports (padding: env(safe-area-inset-top)) {
+    body {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+}
+
+/* Jo log animation kam chahtay hain unke liye */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .marquee-track {
+        animation: none;
+    }
 }
