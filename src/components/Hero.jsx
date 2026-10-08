@@ -8,29 +8,20 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion'
-import { FiArrowUpRight, FiGithub, FiLinkedin, FiMail } from 'react-icons/fi'
+import { FiArrowUpRight } from 'react-icons/fi'
 import { go } from './go'
 
 const FIRST = 'Monsaf'
 const LAST = 'Ali'
 const PHOTO = '/profile.png'
+const ROLES = ['Web Developer', 'Mobile Developer']
 // 'frame'  -> works with ANY photo (with background, any pose)
 // 'cutout' -> only for transparent-background PNGs (person pops out of the card)
 const MODE = 'frame'
-const ROLES = ['MERN Stack Developer', 'React.js Developer', 'Full-Stack Developer']
-const STACK = ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'REST APIs', 'Tailwind CSS']
-
-
 
 export default function Hero() {
   const reduce = useReducedMotion()
-  const [role, setRole] = useState(0)
   const [imgOk, setImgOk] = useState(true)
-
-  useEffect(() => {
-    const r = setInterval(() => setRole((x) => (x + 1) % ROLES.length), 2600)
-    return () => clearInterval(r)
-  }, [])
 
   // 3D tilt on the photo card
   const mx = useMotionValue(0)
@@ -55,13 +46,9 @@ export default function Hero() {
   const shadowOpacity = useTransform(ss, [0, 700], [1, 1 - 0.6 * k])
   const wrapOpacity = useTransform(ss, [350, 900], [1, 1 - 0.7 * k])
   // frame mode
-  const plateY = useTransform(ss, [0, 700], [0, 70 * k])
-  const plateRot = useTransform(ss, [0, 700], [-6, -6 - 7 * k])
   const frameY = useTransform(ss, [0, 700], [0, -50 * k])
   const frameImgScale = useTransform(ss, [0, 700], [1.05, 1.05 + 0.18 * k])
   const frameImgY = useTransform(ss, [0, 700], [0, 30 * k])
-  const badgeY = useTransform(ss, [0, 700], [0, -100 * k])
-  const badgeX = useTransform(ss, [0, 700], [0, -20 * k])
 
   const onMove = (e) => {
     if (reduce) return
@@ -80,119 +67,29 @@ export default function Hero() {
     transition: { duration: 0.8, delay: d, ease: [0.16, 1, 0.3, 1] },
   })
 
+
+  const [role, setRole] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setRole((r) => (r + 1) % ROLES.length), 2000)
+    return () => clearInterval(t)
+  }, [])
+
+
   return (
     <section
       id="top"
-      className="wrap relative z-10 grid min-h-screen items-center gap-16 pb-20 pt-32 lg:grid-cols-[1.1fr_0.9fr]"
+      className="wrap relative z-10 grid min-h-screen items-center gap-16 pb-20 pt-32 lg:grid-cols-[0.9fr_1.1fr]"
     >
       {/* Background lives in <Background /> (aurora, cursor grid, shapes, grain) */}
 
-      {/* ───────── Left ───────── */}
-      <div>
-        <motion.span
-          {...rise(0.05)}
-          className="inline-flex items-center gap-2.5 rounded-full border border-cyan-300/20 bg-cyan-300/5 py-1.5 pl-2 pr-4 text-sm font-medium text-cyan-50/90 backdrop-blur"
-        >
-          <span className="relative flex size-2.5">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-cyan-300/70" />
-            <span className="relative inline-flex size-2.5 rounded-full bg-cyan-300" />
-          </span>
-          Available for new projects
-        </motion.span>
-
-        <motion.p {...rise(0.12)} className="mt-8 font-mono text-base text-(--muted)">
-          <span className="text-cyan-300">&lt;</span>hello world
-          <span className="text-cyan-300"> /&gt;</span> I'm
-        </motion.p>
-
-        <motion.h1
-          {...rise(0.2)}
-          aria-label={`${FIRST} ${LAST}`}
-          className="mt-2 font-(family-name:--display) text-6xl font-extrabold leading-[0.95] tracking-tighter text-white sm:text-7xl lg:text-8xl"
-        >
-          {FIRST}{' '}
-          <span className="relative inline-block">
-            <span className="bg-gradient-to-r from-(--blue) via-sky-400 to-cyan-300 bg-clip-text text-transparent">
-              {LAST}
-            </span>
-            <svg
-              viewBox="0 0 200 14"
-              preserveAspectRatio="none"
-              className="absolute -bottom-3 left-0 h-3 w-full"
-              aria-hidden="true"
-            >
-              <motion.path
-                d="M2 9 C 40 2, 70 14, 100 7 S 160 2, 198 8"
-                fill="none"
-                stroke="#22d3ee"
-                strokeWidth="3"
-                strokeLinecap="round"
-                initial={reduce ? false : { pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 1, delay: 0.9, ease: 'easeOut' }}
-              />
-            </svg>
-          </span>
-        </motion.h1>
-
-        <motion.div {...rise(0.3)} className="mt-9 flex items-center gap-3">
-          <div className="flex h-11 items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-[#04080c]/60 px-4 font-mono text-sm backdrop-blur-md sm:text-base">
-            <span className="text-cyan-300">~/role</span>
-            <span className="text-white/30">$</span>
-            <div className="relative h-6 overflow-hidden" aria-live="polite">
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={role}
-                  initial={reduce ? false : { y: 24, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={reduce ? { opacity: 0 } : { y: -24, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="block text-white"
-                >
-                  {ROLES[role]}
-                </motion.span>
-              </AnimatePresence>
-            </div>
-            <span className="h-5 w-[2px] animate-pulse bg-cyan-300" />
-          </div>
-        </motion.div>
-
-        <motion.p
-          {...rise(0.4)}
-          className="mt-7 max-w-xl text-lg leading-relaxed text-(--muted)"
-        >
-          I build secure, responsive, and high-performance web applications
-          using React.js, Node.js, Express.js, and MongoDB, turning real-world
-          ideas into reliable digital solutions.
-        </motion.p>
-
-        <motion.div {...rise(0.5)} className="mt-9 flex flex-wrap items-center gap-4">
-          <button
-            onClick={() => go('projects')}
-            className="group relative flex items-center gap-2 overflow-hidden rounded-full p-[1.5px] bg-gradient-to-r from-(--blue) to-indigo-500 px-7 py-4 font-semibold text-white shadow-xl shadow-(--blue)/40 transition-transform hover:-translate-y-0.5"
-          >
-            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-            <span className="relative">See my work</span>
-            <FiArrowUpRight className="relative transition-transform duration-300 group-hover:rotate-45" />
-          </button>
-          <button
-            onClick={() => go('contact')}
-            className="rounded-full p-[1.5px] border border-white/15 bg-white/5 px-7 py-4 font-semibold text-white backdrop-blur transition-all hover:-translate-y-0.5 hover:border-cyan-300 hover:text-cyan-300"
-          >
-            Let's talk
-          </button>
-
-        </motion.div>
-
-      </div>
-
-      {/* ───────── Photo ───────── */}
+      {/* ───────── Photo (left on desktop) ───────── */}
       <motion.div
         initial={reduce ? false : { opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
         style={{ opacity: wrapOpacity }}
-        className="relative grid place-items-center [perspective:1200px]"
+        className="relative grid place-items-center [perspective:1200px] lg:order-1"
         onMouseMove={onMove}
         onMouseLeave={onLeave}
       >
@@ -202,55 +99,29 @@ export default function Hero() {
         >
           {MODE === 'frame' ? (
             <>
-              {/* back plate, tilted, peeks out behind the photo */}
+              {/* simple photo card: thin frame, no back plate, no name tag */}
               <motion.div
-                className="absolute inset-0 rounded-[2rem] border border-cyan-300/20 bg-gradient-to-br from-(--blue)/45 via-indigo-500/20 to-transparent"
-                style={{ y: plateY, rotate: plateRot, x: -18, z: -40 }}
-              />
-
-              {/* photo card: any image, graded to match the site */}
-              <motion.div
-                className="absolute inset-0 overflow-hidden rounded-[2rem] border border-white/15 bg-[#04080c] shadow-[0_30px_70px_-20px_rgba(0,0,0,0.9)]"
-                style={{ y: frameY, z: 30 }}
+                className="absolute inset-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-2 shadow-2xl shadow-black/50"
+                style={{ y: frameY }}
               >
-                {imgOk ? (
-                  <motion.img
-                    src={PHOTO}
-                    alt={`${FIRST} ${LAST}`}
-                    onError={() => setImgOk(false)}
-                    draggable={false}
-                    className="size-full object-cover object-top"
-                    style={{
-                      scale: frameImgScale,
-                      y: frameImgY,
-                      filter: 'contrast(1.05) saturate(0.9) brightness(0.95)',
-                    }}
-                  />
-                ) : (
-                  <div className="grid size-full place-items-center font-(family-name:--display) text-7xl font-extrabold text-cyan-300">
-                    {FIRST[0]}
-                    {LAST[0]}
-                  </div>
-                )}
-                {/* colour grade so every photo feels part of the page */}
-                <div className="absolute inset-0 bg-(--blue)/25 mix-blend-soft-light" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#04080c] via-[#04080c]/20 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-300/15 via-transparent to-transparent" />
-                <div className="absolute inset-0 rounded-[2rem] ring-1 ring-inset ring-white/10" />
-              </motion.div>
-
-              {/* glass name tag floats in front of the photo */}
-              <motion.div
-                className="absolute -bottom-5 -left-5 rounded-2xl border border-white/15 bg-[#04080c]/60 px-5 py-3.5 backdrop-blur-xl sm:-left-10"
-                style={{ y: badgeY, x: badgeX, z: 90 }}
-              >
-                <p className="font-(family-name:--display) text-lg font-bold leading-tight text-white">
-                  {FIRST} {LAST}
-                </p>
-                <p className="mt-0.5 flex items-center gap-2 font-mono text-xs text-cyan-300">
-                  <span className="size-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_2px_rgba(34,211,238,0.7)]" />
-                  MERN Stack Developer
-                </p>
+                <div className="relative size-full overflow-hidden rounded-2xl">
+                  {imgOk ? (
+                    <motion.img
+                      src={PHOTO}
+                      alt={`${FIRST} ${LAST}`}
+                      onError={() => setImgOk(false)}
+                      draggable={false}
+                      className="size-full object-cover object-top"
+                      style={{ scale: frameImgScale, y: frameImgY }}
+                    />
+                  ) : (
+                    <div className="grid size-full place-items-center font-(family-name:--display) text-7xl font-extrabold text-cyan-300">
+                      {FIRST[0]}
+                      {LAST[0]}
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#04080c]/60 via-transparent to-transparent" />
+                </div>
               </motion.div>
             </>
           ) : (
@@ -303,6 +174,91 @@ export default function Hero() {
           )}
         </motion.div>
       </motion.div>
+
+      {/* ───────── Text (right on desktop) ───────── */}
+      <div className="lg:order-2">
+        <motion.p {...rise(0.12)} className="font-mono text-base text-(--muted)">
+          Hi, I'm
+        </motion.p>
+
+        <motion.h1
+          {...rise(0.2)}
+          aria-label={`${FIRST} ${LAST}`}
+          className="mt-2 font-(family-name:--display) text-6xl font-extrabold leading-[0.95] tracking-tighter text-white sm:text-7xl lg:text-8xl"
+        >
+          {FIRST}{' '}
+          <span className="relative inline-block">
+            <span className="bg-gradient-to-r from-(--blue) via-sky-400 to-cyan-300 bg-clip-text text-transparent">
+              {LAST}
+            </span>
+            <svg
+              viewBox="0 0 200 14"
+              preserveAspectRatio="none"
+              className="absolute -bottom-3 left-0 h-3 w-full"
+              aria-hidden="true"
+            >
+              <motion.path
+                d="M2 9 C 40 2, 70 14, 100 7 S 160 2, 198 8"
+                fill="none"
+                stroke="#22d3ee"
+                strokeWidth="3"
+                strokeLinecap="round"
+                initial={reduce ? false : { pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 1, delay: 0.9, ease: 'easeOut' }}
+              />
+            </svg>
+          </span>
+        </motion.h1>
+
+
+        {/* role pill: switches every 2 seconds */}
+        <motion.div {...rise(0.3)} className="mt-8">
+          <span className="inline-flex items-center gap-2 overflow-hidden rounded-full border border-cyan-300/30 bg-cyan-300/10 px-5 py-2 font-mono text-sm text-cyan-300 sm:text-base">
+            <span className="size-1.5 rounded-full bg-cyan-300" />
+            <span className="relative inline-flex h-6 items-center" aria-live="polite">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={role}
+                  initial={reduce ? false : { y: 16, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={reduce ? { opacity: 0 } : { y: -16, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="block"
+                >
+                  {ROLES[role]}
+                </motion.span>
+              </AnimatePresence>
+            </span>
+          </span>
+        </motion.div>
+
+        <motion.p
+          {...rise(0.4)}
+          className="mt-7 max-w-xl text-lg leading-relaxed text-(--muted)"
+        >
+          I build secure, responsive, and high-performance web applications
+          using React.js, Node.js, Express.js, and MongoDB, turning real-world
+          ideas into reliable digital solutions.
+        </motion.p>
+
+        <motion.div {...rise(0.5)} className="mt-9 flex flex-wrap items-center gap-4">
+          <button
+            onClick={() => go('projects')}
+            className="group relative flex items-center gap-2 overflow-hidden rounded-full p-[1.5px] bg-gradient-to-r from-(--blue) to-indigo-500 px-7 py-4 font-semibold text-white shadow-xl shadow-(--blue)/40 transition-transform hover:-translate-y-0.5"
+          >
+            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <span className="relative">See my work</span>
+            <FiArrowUpRight className="relative transition-transform duration-300 group-hover:rotate-45" />
+          </button>
+          <button
+            onClick={() => go('contact')}
+            className="rounded-full p-[1.5px] border border-white/15 bg-white/5 px-7 py-4 font-semibold text-white backdrop-blur transition-all hover:-translate-y-0.5 hover:border-cyan-300 hover:text-cyan-300"
+          >
+            Let's talk
+          </button>
+        </motion.div>
+      </div>
     </section>
   )
 }
