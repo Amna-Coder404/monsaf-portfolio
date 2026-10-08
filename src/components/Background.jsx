@@ -1,11 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react"
 
 const hexToRgb = (hex) => {
     let h = hex.trim().replace("#", "");
     if (h.length === 3) h = h.split("").map((c) => c + c).join("");
     const n = parseInt(h, 16);
     return Number.isNaN(n) ? [6, 182, 212] : [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-};
+}
 
 export default function Background() {
     const canvasRef = useRef(null);
@@ -17,7 +17,7 @@ export default function Background() {
 
         let w = 0, h = 0, raf, frame = 0;
         let particles = [];
-        let rgb = [6, 182, 212];
+        let rgb;
         const mouse = { x: -9999, y: -9999 };
         const LINK = 130;
         const MOUSE_R = 160;
@@ -51,6 +51,22 @@ export default function Background() {
             if (frame++ % 30 === 0) readColor();
             const [r, g, b] = rgb;
             ctx.clearRect(0, 0, w, h);
+
+            // --- ADDED: Cursor Ambient Glow Shadow ---
+            if (mouse.x !== -9999 && mouse.y !== -9999) {
+                const gradient = ctx.createRadialGradient(
+                    mouse.x, mouse.y, 0,
+                    mouse.x, mouse.y, MOUSE_R
+                );
+                // Center color: soft glow using the same system color (15% opacity)
+                gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.15)`);
+                // Outer color: fades completely into transparent
+                gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, w, h);
+            }
+            // ----------------------------------------
 
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];

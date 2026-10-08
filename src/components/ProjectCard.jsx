@@ -88,8 +88,9 @@ const ProjectCard = forwardRef(function ProjectCard({ project: p, index = 0, onT
                 </h3>
 
                 {/* tags as plain text */}
+                {/* tags as plain text */}
                 {shown.length > 0 && (
-                    <p className="relative z-10 mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                    <p className="relative z-10 mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs pt-5">
                         {shown.map((t) => (
                             <button
                                 key={t}
@@ -98,7 +99,7 @@ const ProjectCard = forwardRef(function ProjectCard({ project: p, index = 0, onT
                                     e.stopPropagation()
                                     onTag?.(t)
                                 }}
-                                className="text-[#7aa2ff] transition-colors hover:text-white"
+                                className="rounded-full bg-transparent border border-white text-white px-2 py-0.5 hover:bg-white hover:text-black transition-colors"
                             >
                                 {t}
                             </button>
