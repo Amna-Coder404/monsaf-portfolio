@@ -67,29 +67,27 @@ export default function Hero() {
     transition: { duration: 0.8, delay: d, ease: [0.16, 1, 0.3, 1] },
   })
 
-
-  const [role, setRole] = useState(0);
+  const [role, setRole] = useState(0)
 
   useEffect(() => {
     const t = setInterval(() => setRole((r) => (r + 1) % ROLES.length), 2000)
     return () => clearInterval(t)
   }, [])
 
-
   return (
     <section
       id="top"
-      className="wrap relative z-10 grid min-h-screen items-center gap-16 pb-20 pt-32 lg:grid-cols-[0.9fr_1.1fr]"
+      className="wrap relative z-10 grid min-h-screen items-center gap-16 pb-20 pt-32 lg:grid-cols-[1.1fr_0.9fr]"
     >
       {/* Background lives in <Background /> (aurora, cursor grid, shapes, grain) */}
 
-      {/* ───────── Photo (left on desktop) ───────── */}
+      {/* ───────── Photo (right on desktop) ───────── */}
       <motion.div
         initial={reduce ? false : { opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
         style={{ opacity: wrapOpacity }}
-        className="relative grid place-items-center [perspective:1200px] lg:order-1"
+        className="relative grid place-items-center [perspective:1200px] lg:order-2"
         onMouseMove={onMove}
         onMouseLeave={onLeave}
       >
@@ -175,8 +173,8 @@ export default function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* ───────── Text (right on desktop) ───────── */}
-      <div className="lg:order-2">
+      {/* ───────── Text (left on desktop) ───────── */}
+      <div className="lg:order-1">
         <motion.p {...rise(0.12)} className="font-mono text-base text-(--muted)">
           Hi, I'm
         </motion.p>
@@ -210,7 +208,6 @@ export default function Hero() {
             </svg>
           </span>
         </motion.h1>
-
 
         {/* role pill: switches every 2 seconds */}
         <motion.div {...rise(0.3)} className="mt-8">
