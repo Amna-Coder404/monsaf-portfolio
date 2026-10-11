@@ -47,17 +47,10 @@ function Shell() {
         <Routes>
           <Route path="/" element={<Home />} />
 
-          {/* /projects            -> all types
-              /projects/:type      -> one type, e.g. /projects/web
-              /projects/:type/:id  -> project detail */}
+
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/:type" element={<ProjectsPage />} />
           <Route path="/projects/:type/:id" element={<ProjectDetail />} />
-
-          {/* Old URL kept so existing links keep working.
-              Remove once ProjectCard uses projectPath(). */}
-          <Route path="/project/:id" element={<ProjectDetail />} />
-
           <Route path="*" element={<Home />} />
         </Routes>
       </main>
