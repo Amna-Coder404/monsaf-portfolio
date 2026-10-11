@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
     FiArrowLeft,
@@ -14,6 +14,7 @@ import {
 import { fetchProject } from '../lib/projects'
 import { imageSources } from '../lib/preview'
 import ProjectImage from '../components/ProjectImage'
+import { projectPath, projectsPath, typeLabel } from '../lib/projectRoutes'
 
 
 const youtubeId = (u) => {
@@ -112,7 +113,7 @@ function DemoFrame({ p }) {
 
 /* ───────── Page ───────── */
 export default function ProjectDetail() {
-    const { id } = useParams()
+    const { id, type } = useParams()
     const navigate = useNavigate()
     const [p, setP] = useState(undefined) // undefined = loading, null = not found
     const [error, setError] = useState('')
@@ -128,14 +129,18 @@ export default function ProjectDetail() {
         return () => { document.title = 'Monsaf Ali' }
     }, [p])
 
-    const back = () => navigate('/', { state: { scrollTo: 'projects' } })
+    // Opened from /projects/:type/:id -> back to that type's list.
+    // Opened from the old /project/:id URL -> back to the home section.
+    const back = () =>
+        type ? navigate(projectsPath(type)) : navigate('/', { state: { scrollTo: 'projects' } })
+    const backLabel = type ? `${typeLabel(type)} projects` : 'All projects'
 
     const backBtn = (
         <button
             onClick={back}
             className="mb-8 inline-flex items-center gap-2 rounded-full border border-(--line) bg-(--paper)/80 px-4 py-2 text-sm font-semibold text-(--muted) backdrop-blur transition-colors hover:border-(--blue) hover:text-white"
         >
-            <FiArrowLeft /> All projects
+            <FiArrowLeft /> {backLabel}
         </button>
     )
 
@@ -169,6 +174,9 @@ export default function ProjectDetail() {
                 <p className="mt-3 text-(--muted)">Yeh project ab maujood nahi hai.</p>
             </section>
         )
+
+    // Wrong type in the URL (e.g. /projects/web/5 for a mobile project) -> fix the URL.
+    if (type && p.type !== type) return <Navigate to={projectPath(p)} replace />
 
     const isWeb = p.type === 'web'
     const main = isWeb
@@ -348,7 +356,7 @@ export default function ProjectDetail() {
                     whileTap={{ scale: 0.96 }}
                     className="inline-flex items-center gap-2 rounded-full border-2 border-(--blue)/60 px-8 py-4 font-semibold transition-colors hover:bg-(--blue)"
                 >
-                    <FiArrowLeft /> Back to all projects
+                    <FiArrowLeft /> Back to {backLabel.toLowerCase()}
                 </motion.button>
             </motion.div>
         </article>

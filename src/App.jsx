@@ -1,18 +1,15 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
-import { MotionConfig } from 'framer-motion'
+import { AnimatePresence, MotionConfig } from 'framer-motion'
 import Lenis from 'lenis'
+
 import Background from './components/Background'
+import ChatWidget from './components/ChatWidget'
+import Loader from './components/Loader'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import ProjectDetail from './pages/ProjectDetail'
-import ChatWidget from './components/ChatWidget'
-
-import { useState } from 'react'
-import { AnimatePresence } from 'framer-motion'
-import Loader from './components/Loader'
-
-
+import ProjectsPage from './pages/ProjectsPage'
 
 // naye page par hamesha upar se shuru
 function ScrollToTop() {
@@ -26,6 +23,8 @@ function ScrollToTop() {
 }
 
 function Shell() {
+  const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     const lenis = new Lenis({ lerp: 0.1 })
     let id
@@ -35,14 +34,11 @@ function Shell() {
     return () => { cancelAnimationFrame(id); lenis.destroy() }
   }, [])
 
-  const [loading, setLoading] = useState(true)
-
-  const handleDone = () => setLoading(false)
-
-
   return (
     <MotionConfig reducedMotion="never">
-      <AnimatePresence>{loading && <Loader key="loader" onDone={handleDone} />}</AnimatePresence>
+      <AnimatePresence>
+        {loading && <Loader key="loader" onDone={() => setLoading(false)} />}
+      </AnimatePresence>
       <Background />
       <ScrollToTop />
       <Navbar />
@@ -50,7 +46,18 @@ function Shell() {
       <main className="relative z-10 font-[Inter,system-ui,sans-serif]">
         <Routes>
           <Route path="/" element={<Home />} />
+
+          {/* /projects            -> all types
+              /projects/:type      -> one type, e.g. /projects/web
+              /projects/:type/:id  -> project detail */}
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/projects/:type" element={<ProjectsPage />} />
+          <Route path="/projects/:type/:id" element={<ProjectDetail />} />
+
+          {/* Old URL kept so existing links keep working.
+              Remove once ProjectCard uses projectPath(). */}
           <Route path="/project/:id" element={<ProjectDetail />} />
+
           <Route path="*" element={<Home />} />
         </Routes>
       </main>

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { FiArrowUpRight, FiMonitor, FiSmartphone } from 'react-icons/fi'
 import { BsPinAngleFill } from 'react-icons/bs'
 import { imageSources } from '../lib/preview'
+import { projectPath } from '../lib/projectRoutes'
 import ProjectImage from './ProjectImage'
 
 const host = (u) => {
@@ -110,7 +111,7 @@ const ProjectCard = forwardRef(function ProjectCard({ project: p, index = 0, onT
 
                 {/* the whole card is clickable through this link */}
                 <Link
-                    to={`/project/${p.id}`}
+                    to={projectPath(p)}
                     className="mt-auto flex items-center justify-between pt-5 text-sm font-medium text-white after:absolute after:inset-0 after:content-['']"
                 >
                     <span className="transition-colors duration-300 group-hover:text-(--blue)">

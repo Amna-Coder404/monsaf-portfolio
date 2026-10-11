@@ -1,15 +1,24 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 
 import { fetchProjects } from '../lib/projects'
+import { PROJECT_TYPES, projectsPath, typeLabel } from '../lib/projectRoutes'
 
 import ProjectCard from './ProjectCard'
+import TypeDropdown from './TypeDropdown'
 
-export default function Projects() {
+/**
+ * Projects section.
+ * `type` comes from the URL (see ProjectsPage); on Home it stays 'all'.
+ * Picking a type in the dropdown navigates to /projects/:type.
+ */
+export default function Projects({ type = 'all' }) {
+  const navigate = useNavigate()
+
   const [projects, setProjects] = useState(null)
   const [error, setError] = useState('')
-  const [type, setType] = useState('all')
   const [tag, setTag] = useState(null)
 
   // ───── horizontal scroller state ─────
@@ -25,21 +34,26 @@ export default function Projects() {
     fetchProjects().then(setProjects).catch((e) => setError(e.message))
   }, [])
 
-  const types = useMemo(() => {
+  // A tag only makes sense inside one type, so reset it when the type changes.
+  useEffect(() => {
+    setTag(null)
+  }, [type])
+
+  const typeOptions = useMemo(() => {
     const all = projects || []
-    const t = [{ id: 'all', label: 'All', count: all.length }]
-    for (const id of ['mobile', 'web']) {
+    const options = [{ id: 'all', label: 'All', count: all.length }]
+    for (const { id, label } of PROJECT_TYPES) {
       const count = all.filter((p) => p.type === id).length
-      if (count) t.push({ id, label: id === 'mobile' ? 'Mobile' : 'Web', count })
+      if (count) options.push({ id, label, count })
     }
-    return t
+    return options
   }, [projects])
 
   const tags = useMemo(() => {
     const map = new Map()
-      ; (projects || [])
-        .filter((p) => type === 'all' || p.type === type)
-        .forEach((p) => (p.tags || []).forEach((t) => map.set(t, (map.get(t) || 0) + 1)))
+    ;(projects || [])
+      .filter((p) => type === 'all' || p.type === type)
+      .forEach((p) => (p.tags || []).forEach((t) => map.set(t, (map.get(t) || 0) + 1)))
     return [...map.entries()].sort((a, b) => b[1] - a[1])
   }, [projects, type])
 
@@ -47,10 +61,7 @@ export default function Projects() {
     (p) => (type === 'all' || p.type === type) && (!tag || (p.tags || []).includes(tag))
   )
 
-  const pickType = (id) => {
-    setType(id)
-    setTag(null)
-  }
+  const pickType = (id) => navigate(projectsPath(id))
 
   // ───── scroll helpers ─────
   const measure = useCallback(() => {
@@ -123,7 +134,7 @@ export default function Projects() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          Projects
+          {type === 'all' ? 'Projects' : `${typeLabel(type)} Projects`}
         </motion.h2>
 
         <motion.div
@@ -131,31 +142,8 @@ export default function Projects() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="flex rounded-full border border-(--line) bg-(--paper)/80 p-1 backdrop-blur"
-          role="tablist"
         >
-          {types.map((f) => (
-            <button
-              key={f.id}
-              role="tab"
-              aria-selected={type === f.id}
-              onClick={() => pickType(f.id)}
-              className={`relative rounded-full px-5 py-2.5 font-semibold transition-colors ${type === f.id ? 'text-white' : 'text-(--muted) hover:text-white'
-                }`}
-            >
-              {type === f.id && (
-                <motion.span
-                  layoutId="pill"
-                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  className="absolute inset-0 rounded-full bg-(--blue) shadow-lg shadow-(--blue)/40"
-                />
-              )}
-              <span className="relative flex items-center gap-2">
-                {f.label}
-                <span className="text-xs opacity-60">{f.count}</span>
-              </span>
-            </button>
-          ))}
+          <TypeDropdown value={type} options={typeOptions} onChange={pickType} />
         </motion.div>
       </div>
 
