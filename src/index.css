@@ -1,39 +1,52 @@
 @import "tailwindcss";
 
+/* =========================
+   DARK THEME (DEFAULT)
+========================= */
+
 :root {
     color-scheme: dark;
 
-    --ink: #eef2ff;
-    --blue: #007185;
-    --paper: #0a0d1c;
-    --fog: #10142b;
-    --line: #1b2246;
-    --muted: #8c96c4;
-
     --bg: #03040a;
+    --ink: #eef2ff;
+    --text: #eef2ff;
+    --blue: #007185;
+
+    --paper: #0a0d1c;
     --surface: #111827;
-    --text: var(--ink);
+    --fog: #10142b;
+
+    --line: rgba(255, 255, 255, 0.1);
+    --muted: #9ca3af;
 
     --display: 'Space Grotesk', system-ui, sans-serif;
     --nav-h: 4.5rem;
 }
 
-/* LIGHT THEME */
+/* =========================
+   LIGHT THEME
+========================= */
+
 :root[data-theme="light"] {
     color-scheme: light;
 
-    --ink: #111827;
-    --paper: #ffffff;
-    --fog: #f1f5f9;
-    --line: #e2e8f0;
-    --muted: #64748b;
-
     --bg: #f8fafc;
-    --surface: #ffffff;
+    --ink: #111827;
     --text: #111827;
+    --blue: #007185;
+
+    --paper: #ffffff;
+    --surface: #ffffff;
+    --fog: #f1f5f9;
+
+    --line: rgba(15, 23, 42, 0.12);
+    --muted: #64748b;
 }
 
-/* GLOBAL THEME */
+/* =========================
+   GLOBAL STYLES
+========================= */
+
 * {
     -webkit-tap-highlight-color: transparent;
 }
@@ -51,8 +64,10 @@ body {
     min-height: 100vh;
     min-height: 100dvh;
     overflow-x: clip;
+
     background-color: var(--bg);
     color: var(--ink);
+
     transition:
         background-color 0.3s ease,
         color 0.3s ease;
@@ -62,12 +77,79 @@ body {
     margin: 0;
 }
 
+/* Default text elements inherit the theme color */
+body,
+button,
+input,
+textarea,
+select {
+    color: var(--ink);
+}
+
+/* Form controls should also use theme-aware surfaces */
+input,
+textarea,
+select {
+    background-color: var(--surface);
+    border-color: var(--line);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--muted);
+    opacity: 1;
+}
+
 img,
 video,
 svg,
 canvas {
     max-width: 100%;
 }
+
+/* =========================
+   THEME-AWARE UTILITIES
+   Use these classes in JSX:
+   theme-bg, theme-card,
+   theme-text, theme-muted,
+   theme-border
+========================= */
+
+.theme-bg {
+    background-color: var(--bg);
+}
+
+.theme-card {
+    background-color: var(--paper);
+}
+
+.theme-surface {
+    background-color: var(--surface);
+}
+
+.theme-fog {
+    background-color: var(--fog);
+}
+
+.theme-text {
+    color: var(--ink);
+}
+
+.theme-muted {
+    color: var(--muted);
+}
+
+.theme-border {
+    border-color: var(--line);
+}
+
+.theme-accent {
+    color: var(--blue);
+}
+
+/* =========================
+   MARQUEE ANIMATION
+========================= */
 
 @keyframes marquee {
     to {
@@ -90,15 +172,9 @@ canvas {
     }
 }
 
-@media (max-width: 640px) {
-    :root {
-        --nav-h: 3.75rem;
-    }
-
-    .marquee-track {
-        animation-duration: 22s;
-    }
-}
+/* =========================
+   LAYOUT COMPONENTS
+========================= */
 
 @layer components {
     .wrap {
@@ -118,16 +194,29 @@ canvas {
     }
 }
 
+/* =========================
+   NAVIGATION / RESPONSIVE
+========================= */
+
 section[id] {
     scroll-margin-top: calc(var(--nav-h) + 0.5rem);
 }
 
 @media (max-width: 640px) {
+    :root {
+        --nav-h: 3.75rem;
+    }
+
     .wrap {
         width: calc(100% - 2rem);
     }
+
+    .marquee-track {
+        animation-duration: 22s;
+    }
 }
 
+/* Notched phones */
 @supports (padding: env(safe-area-inset-top)) {
     body {
         padding-left: env(safe-area-inset-left);
@@ -135,6 +224,7 @@ section[id] {
     }
 }
 
+/* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;

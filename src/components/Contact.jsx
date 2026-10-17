@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import emailjs from '@emailjs/browser'
@@ -19,10 +18,10 @@ const PUBLIC_KEY = 'gf9OfKiAGstx0sCiv'
 const isEmail = (value) => /^\S+@\S+\.\S+$/.test(value || '')
 
 const inputClass =
-  'mt-2 w-full rounded-xl border border-(--line) bg-[#1f2937] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-(--muted)/60 focus:border-(--blue) focus:bg-white/[0.05] disabled:cursor-not-allowed disabled:opacity-60'
+  'mt-2 w-full rounded-xl border border-(--line) bg-(--fog) px-4 py-3 text-sm text-(--ink) outline-none transition-colors placeholder:text-(--muted)/60 focus:border-(--blue) focus:bg-(--surface) disabled:cursor-not-allowed disabled:opacity-60'
 
 const linkClass =
-  'inline-flex items-center gap-2 text-sm text-(--muted) transition-colors hover:text-white'
+  'inline-flex items-center gap-2 text-sm text-(--muted) transition-colors hover:text-(--blue)'
 
 function Field({
   id,
@@ -38,7 +37,7 @@ function Field({
     <div>
       <label
         htmlFor={id}
-        className="block text-sm font-medium text-white"
+        className="block text-sm font-medium text-(--ink)"
       >
         {label}
       </label>
@@ -163,19 +162,21 @@ function ContactForm() {
           <FiCheckCircle className="size-7 text-emerald-400" />
         </div>
 
-        <h3 className="text-2xl font-bold tracking-tight text-white">
+        <h3 className="text-2xl font-bold tracking-tight text-(--ink)">
           Message sent
         </h3>
 
         <p className="mt-3 max-w-sm text-sm leading-6 text-(--muted)">
           Thank you for reaching out. I'll get back to you at{' '}
-          <span className="break-all text-white">{form.email}</span>.
+          <span className="break-all font-medium text-(--ink)">
+            {form.email}
+          </span>.
         </p>
 
         <button
           type="button"
           onClick={resetForm}
-          className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-(--blue)"
+          className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-(--ink) transition-colors hover:text-(--blue)"
         >
           Send another message <FiArrowRight />
         </button>
@@ -186,7 +187,7 @@ function ContactForm() {
   return (
     <form onSubmit={submit} noValidate className="space-y-5">
       <div className="mb-7">
-        <h3 className="text-xl font-semibold text-white">
+        <h3 className="text-xl font-semibold text-(--ink)">
           Send a message
         </h3>
         <p className="mt-2 text-sm leading-6 text-(--muted)">
@@ -306,7 +307,7 @@ export default function Contact() {
           GET IN TOUCH
         </p>
 
-        <h2 className="mt-5 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
+        <h2 className="mt-5 text-4xl font-bold leading-tight tracking-tight text-(--ink) sm:text-5xl">
           Have an idea?
           <br />
           Let's{' '}
@@ -320,7 +321,7 @@ export default function Contact() {
 
         <a
           href={`mailto:${ME.email}`}
-          className="mt-8 inline-flex max-w-full items-center gap-2 break-all text-base font-medium text-white transition-colors hover:text-(--blue) sm:text-lg"
+          className="mt-8 inline-flex max-w-full items-center gap-2 break-all text-base font-medium text-(--ink) transition-colors hover:text-(--blue) sm:text-lg"
         >
           {ME.email}
           <FiArrowUpRight className="shrink-0" />
@@ -360,13 +361,13 @@ export default function Contact() {
         </div>
       </motion.div>
 
-      {/* Simple contact form card */}
+      {/* Contact form card */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.45, delay: 0.1 }}
-        className="min-w-0 rounded-2xl border border-(--line) bg-[#111827] p-5 sm:p-8"
+        className="min-w-0 rounded-2xl border border-(--line) bg-(--paper) p-5 transition-colors duration-300 sm:p-8"
       >
         <ContactForm />
       </motion.div>
