@@ -242,11 +242,15 @@ export default function Hero() {
         <motion.div {...rise(0.5)} className="mt-9 flex flex-wrap items-center gap-4">
           <button
             onClick={() => go('projects')}
-            className="group relative flex items-center gap-2 overflow-hidden rounded-full p-[1.5px] bg-gradient-to-r from-(--blue) to-indigo-500 px-7 py-4 font-semibold text-white shadow-xl shadow-(--blue)/40 transition-transform hover:-translate-y-0.5"
+            className="group relative flex items-center gap-2 overflow-hidden rounded-full
+    border border-(--blue) bg-(--blue) px-7 py-4
+    font-semibold text-white shadow-lg shadow-(--blue)/25
+    transition-all duration-300 hover:-translate-y-0.5
+    hover:brightness-110"
           >
-            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-            <span className="relative">See my work</span>
-            <FiArrowUpRight className="relative transition-transform duration-300 group-hover:rotate-45" />
+            <span className="relative z-10">See my work</span>
+
+            <FiArrowUpRight className="relative z-10 transition-transform duration-300 group-hover:rotate-45" />
           </button>
           <button
             onClick={() => go('contact')}

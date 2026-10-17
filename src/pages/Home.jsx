@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import Hero from '../components/Hero'
-import About from '../components/About'
-import Skills from '../components/Skills'
+
+
 import Projects from '../components/Projects'
 
 import Contact from '../components/Contact'
 import { go } from '../components/go'
-import Services from '../components/Services'
+
 
 const Divider = () => (
     <div className="mx-auto h-px w-[min(1200px,100%-2.5rem)] bg-linear-to-r from-transparent via-(--blue)/40 to-transparent" />
@@ -27,14 +27,9 @@ export default function Home() {
         <>
             <Hero />
             <Divider />
-            <About />
-            <Divider />
-            <Skills />
-            <Divider />
             <Projects />
             <Divider />
-            <Services />
-            <Divider />
+
             <Contact />
         </>
     )

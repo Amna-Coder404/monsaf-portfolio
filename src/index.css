@@ -2,24 +2,38 @@
 
 :root {
     color-scheme: dark;
-    --ink: #eef2ff;
-    /* text ka rang (ab halka) */
-    --blue: #007185;
-    /* premium blue */
-    --paper: #0a0d1c;
-    /* cards */
-    --fog: #10142b;
-    /* halke fills */
-    --line: #1b2246;
-    /* borders */
-    --muted: #8c96c4;
-    /* secondary text */
-    --display: 'Space Grotesk', system-ui, sans-serif;
 
-    /* Fixed navbar ki height (mobile par thodi chhoti) */
+    --ink: #eef2ff;
+    --blue: #007185;
+    --paper: #0a0d1c;
+    --fog: #10142b;
+    --line: #1b2246;
+    --muted: #8c96c4;
+
+    --bg: #03040a;
+    --surface: #111827;
+    --text: var(--ink);
+
+    --display: 'Space Grotesk', system-ui, sans-serif;
     --nav-h: 4.5rem;
 }
 
+/* LIGHT THEME */
+:root[data-theme="light"] {
+    color-scheme: light;
+
+    --ink: #111827;
+    --paper: #ffffff;
+    --fog: #f1f5f9;
+    --line: #e2e8f0;
+    --muted: #64748b;
+
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --text: #111827;
+}
+
+/* GLOBAL THEME */
 * {
     -webkit-tap-highlight-color: transparent;
 }
@@ -28,18 +42,24 @@ html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     scroll-behavior: smooth;
+    background-color: var(--bg);
 }
 
 html,
 body {
     position: relative;
-    background: #03040a;
-    color: var(--ink);
     min-height: 100vh;
     min-height: 100dvh;
-    /* mobile address bar ke saath sahi height */
     overflow-x: clip;
-    /* side scroll band */
+    background-color: var(--bg);
+    color: var(--ink);
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+}
+
+body {
+    margin: 0;
 }
 
 img,
@@ -64,30 +84,29 @@ canvas {
     animation-direction: reverse;
 }
 
-/* Hover sirf mouse wale devices par (touch par atak jata hai) */
 @media (hover: hover) {
     .marquee-wrap:hover .marquee-track {
         animation-play-state: paused;
     }
 }
 
-/* Phone par marquee thodi tez */
 @media (max-width: 640px) {
+    :root {
+        --nav-h: 3.75rem;
+    }
+
     .marquee-track {
         animation-duration: 22s;
     }
 }
 
 @layer components {
-
-    /* Har section: ek jaisi width aur upar/neeche barabar jagah */
     .wrap {
         width: min(1200px, 100% - 2.5rem);
         margin-inline: auto;
         padding-block: clamp(3.5rem, 10vw, 8rem);
     }
 
-    /* Section headings */
     .h2 {
         font-family: var(--display);
         font-size: clamp(1.75rem, 5.5vw + 0.5rem, 3.25rem);
@@ -96,28 +115,19 @@ canvas {
         letter-spacing: -0.02em;
         margin: 0;
         overflow-wrap: anywhere;
-        /* lambay words screen se bahar na jayen */
     }
 }
 
-/* Fixed navbar ke neeche heading na chhupe jab menu se jump karo */
 section[id] {
     scroll-margin-top: calc(var(--nav-h) + 0.5rem);
 }
 
-/* Chhoti screens */
 @media (max-width: 640px) {
-    :root {
-        --nav-h: 3.75rem;
-    }
-
     .wrap {
         width: calc(100% - 2rem);
-        /* phone par side margin thora kam */
     }
 }
 
-/* Notch wale phones (iPhone etc.) */
 @supports (padding: env(safe-area-inset-top)) {
     body {
         padding-left: env(safe-area-inset-left);
@@ -125,7 +135,6 @@ section[id] {
     }
 }
 
-/* Jo log animation kam chahtay hain unke liye */
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
@@ -133,5 +142,11 @@ section[id] {
 
     .marquee-track {
         animation: none;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
     }
 }
