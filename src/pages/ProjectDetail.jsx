@@ -39,8 +39,32 @@ const fadeUp = (delay = 0) => ({
 })
 
 /* Browser frame for web projects and phone frame for mobile projects */
+
 function DemoFrame({ p }) {
     const isWeb = p.type === 'web'
+    const url = p.demo_video_url || p.video_url || null
+    const yt = youtubeId(url)
+
+    const player = yt ? (
+        <iframe
+            src={`https://www.youtube.com/embed/${yt}?autoplay=1&mute=1&loop=1&playlist=${yt}&playsinline=1&rel=0`}
+            title={`${p.name} demo`}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+            className="absolute inset-0 h-full w-full"
+        />
+    ) : url ? (
+        <video
+            src={url}
+            autoPlay
+            muted
+            loop
+            controls
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 h-full w-full bg-black object-contain"
+        />
+    ) : null
 
     if (isWeb) {
         return (
@@ -49,57 +73,55 @@ function DemoFrame({ p }) {
                     <span className="size-2.5 rounded-full bg-red-400" />
                     <span className="size-2.5 rounded-full bg-amber-400" />
                     <span className="size-2.5 rounded-full bg-emerald-400" />
+
                     <span className="ml-3 flex-1 truncate rounded-md bg-(--surface) px-3 py-1 text-xs text-(--muted)">
                         {host(p.live_url)}
                     </span>
                 </div>
 
-                <div className="relative aspect-[16/10]">
-                    <ProjectImage sources={imageSources(p)} name={p.name} />
+                <div className="relative aspect-[16/10] overflow-hidden">
+                    {player || (
+                        <ProjectImage
+                            sources={imageSources(p)}
+                            name={p.name}
+                        />
+                    )}
                 </div>
             </div>
         )
     }
 
-    const url = p.demo_video_url
-    const yt = youtubeId(url)
-
-    const player = yt ? (
-        <iframe
-            src={`https://www.youtube.com/embed/${yt}?rel=0`}
-            title={`${p.name} demo`}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="absolute inset-0 h-full w-full"
-        />
-    ) : url ? (
-        <video
-            src={url}
-            controls
-            playsInline
-            preload="metadata"
-            className="absolute inset-0 h-full w-full bg-black object-contain"
-        />
-    ) : null
-
     return (
         <motion.div
             animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: 'easeInOut',
+            }}
             className="relative aspect-[9/19] w-[250px] overflow-hidden rounded-[2.6rem] border-[8px] border-(--line) bg-(--surface) shadow-2xl shadow-black/10 sm:w-[280px]"
         >
             <span className="absolute left-1/2 top-2 z-20 h-4 w-16 -translate-x-1/2 rounded-full bg-black" />
 
             {player || (
                 <>
-                    <ProjectImage sources={imageSources(p)} name={p.name} />
+                    <ProjectImage
+                        sources={imageSources(p)}
+                        name={p.name}
+                    />
 
                     <div className="absolute inset-0 z-10 grid place-items-center bg-black/50 backdrop-blur-[2px]">
                         <div className="flex flex-col items-center gap-3 text-center">
                             <span className="relative grid size-16 place-items-center rounded-full bg-(--blue) text-2xl text-white shadow-lg shadow-black/20">
                                 <motion.span
-                                    animate={{ scale: [1, 1.7], opacity: [0.6, 0] }}
-                                    transition={{ duration: 1.8, repeat: Infinity }}
+                                    animate={{
+                                        scale: [1, 1.7],
+                                        opacity: [0.6, 0],
+                                    }}
+                                    transition={{
+                                        duration: 1.8,
+                                        repeat: Infinity,
+                                    }}
                                     className="absolute inset-0 rounded-full bg-(--blue)"
                                 />
                                 <FiPlay className="relative translate-x-0.5" />
@@ -397,8 +419,8 @@ export default function ProjectDetail() {
                                 loading="lazy"
                                 {...fadeUp(i * 0.05)}
                                 className={`shrink-0 snap-start rounded-2xl border border-(--line) bg-(--fog) object-cover object-top shadow-lg shadow-black/10 ${isWeb
-                                        ? 'h-64 w-[26rem] sm:h-72 sm:w-[30rem]'
-                                        : 'h-[26rem] w-[12.5rem] sm:h-[30rem] sm:w-[14rem]'
+                                    ? 'h-64 w-[26rem] sm:h-72 sm:w-[30rem]'
+                                    : 'h-[26rem] w-[12.5rem] sm:h-[30rem] sm:w-[14rem]'
                                     }`}
                             />
                         ))}
